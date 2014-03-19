@@ -428,6 +428,26 @@ void NVMObject::ResetStats( )
     }
 }
 
+void NVMObject::CreateCheckpoint( std::string dir )
+{
+    std::vector<NVMObject_hook *>::iterator it;
+
+    for( it = children.begin(); it != children.end(); it++ )
+    {
+        (*it)->GetTrampoline( )->CreateCheckpoint( dir );
+    }
+}
+
+void NVMObject::RestoreCheckpoint( std::string dir )
+{
+    std::vector<NVMObject_hook *>::iterator it;
+
+    for( it = children.begin(); it != children.end(); it++ )
+    {
+        (*it)->GetTrampoline( )->RestoreCheckpoint( dir );
+    }
+}
+
 void NVMObject::PrintHierarchy( int depth )
 {
     std::vector<NVMObject_hook *>::iterator it;

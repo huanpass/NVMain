@@ -56,7 +56,11 @@ RowModel::~RowModel( )
 
 void RowModel::SetConfig( Config *conf, bool createChildren )
 {
-    SetGranularity( conf->GetValue( "COLS" ) * 8 );
+    Params *params = new Params( );
+    params->SetParams( config );
+    SetParams( params );
+
+    SetGranularity( p->COLS * 8 );
 
     EnduranceModel::SetConfig( conf, createChildren );
 }
@@ -73,7 +77,7 @@ bool RowModel::Write( NVMAddress address, NVMDataBlock /*oldData*/,
     bool rv = true;
     NVMAddress faultAddr;
 
-    MATHeight = GetConfig( )->GetValue( "COLS" );
+    MATHeight = p->MATHeight;
     /*
      *  For our simple row model, we just set the key equal to the row.
      */

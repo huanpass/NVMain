@@ -37,6 +37,7 @@
 #include "include/NVMHelpers.h"
 #include "NVM/nvmain.h"
 #include "Decoders/DRCDecoder/DRCDecoder.h"
+#include "src/EventQueue.h"
 
 #include <iostream>
 #include <sstream>
@@ -78,7 +79,9 @@ void DRAMCache::SetConfig( Config *conf, bool createChildren )
         mainMemoryConfig->Read( configFile );
 
         mainMemory = new NVMain( );
+        EventQueue *mainMemoryEventQueue = new EventQueue( );
         mainMemory->SetParent( this ); 
+        mainMemory->SetEventQueue( mainMemoryEventQueue );
         mainMemory->SetConfig( mainMemoryConfig, "offChipMemory", createChildren );
 
         /* Orphan the interconnect created by NVMain */
@@ -150,6 +153,7 @@ void DRAMCache::SetConfig( Config *conf, bool createChildren )
         }
     }
 
+    /* DRC Variant will call base SetConfig */
     //MemoryController::SetConfig( conf, createChildren );
 
     SetDebugName( "DRAMCache", conf );

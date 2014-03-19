@@ -162,7 +162,7 @@ void SubArray::SetConfig( Config *c, bool createChildren )
 
 void SubArray::RegisterStats( )
 {
-    if( p->EnergyModel_set && p->EnergyModel == "current" )
+    if( p->EnergyModel == "current" )
     {
         AddUnitStat(subArrayEnergy, "mA*t");
         AddUnitStat(activeEnergy, "mA*t");
@@ -262,7 +262,7 @@ bool SubArray::Activate( NVMainRequest *request )
     lastActivate = GetEventQueue()->GetCurrentCycle();
 
     /* Add to bank's total energy. */
-    if( p->EnergyModel_set && p->EnergyModel == "current" )
+    if( p->EnergyModel == "current" )
     {
         /* DRAM Model */
         ncycle_t tRC = p->tRAS + p->tRP;
@@ -416,7 +416,7 @@ bool SubArray::Read( NVMainRequest *request )
 
 
     /* Calculate energy */
-    if( p->EnergyModel_set && p->EnergyModel == "current" )
+    if( p->EnergyModel == "current" )
     {
         /* DRAM Model */
         subArrayEnergy += ( ( p->EIDD4R - p->EIDD3N ) * (double)(p->tBURST) );
@@ -607,7 +607,7 @@ bool SubArray::Write( NVMainRequest *request )
     GetEventQueue( )->InsertEvent( writeEvent, writeEventTime );
 
     /* Calculate energy. */
-    if( p->EnergyModel_set && p->EnergyModel == "current" )
+    if( p->EnergyModel == "current" )
     {
         /* DRAM Model. */
         subArrayEnergy += ( ( p->EIDD4W - p->EIDD3N ) * (double)(p->tBURST) );
@@ -709,7 +709,7 @@ bool SubArray::Refresh( NVMainRequest* request )
     /* set the subarray under refreshing */
     state = SUBARRAY_REFRESHING;
 
-    if( p->EnergyModel_set && p->EnergyModel == "current" )
+    if( p->EnergyModel == "current" )
     {
         /* calibrate the refresh energy since we may have fine-grained refresh */
         subArrayEnergy += ( ( p->EIDD5B - p->EIDD3N ) 
@@ -789,7 +789,7 @@ ncycle_t SubArray::WriteCellData( NVMainRequest *request )
         }
         else if( p->MLCLevels == 2 )
         {
-            ncounters_t max_stddev = p->nWPVar;
+            ncounters_t max_stddev = p->WPMaxVariance;
 
             if( cellData == 0 )
             {
@@ -849,7 +849,7 @@ ncycle_t SubArray::WriteCellData( NVMainRequest *request )
             }
 
             /* Only calculate energy for energy-mode model. */
-            if( p->EnergyModel_set && p->EnergyModel != "current" )
+            if( p->EnergyModel != "current" )
             {
                 subArrayEnergy += p->Ereset + static_cast<double>(programPulseCount) * p->Eset;
                 writeEnergy += p->Ereset + static_cast<double>(programPulseCount) * p->Eset;
